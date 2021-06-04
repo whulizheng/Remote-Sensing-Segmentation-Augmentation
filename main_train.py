@@ -8,8 +8,8 @@ BATCH_SIZE = 1
 shape = [256, 256]
 
 
-train_PATH = "/data/HRSC2016/training/"
-test_PATH = "/data/HRSC2016/test/"
+train_PATH = "data/HRSC2016/training/"
+test_PATH = "data/HRSC2016/test/"
 
 # 加载数据集
 train_dataset = tf.data.Dataset.list_files(train_PATH+'*.png')
