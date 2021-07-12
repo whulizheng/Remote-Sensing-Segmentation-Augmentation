@@ -113,7 +113,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-training_checkpoints_pix2pix/*
 
 tmp/*
 logs/*

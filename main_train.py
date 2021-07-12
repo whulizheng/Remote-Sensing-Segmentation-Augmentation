@@ -1,5 +1,5 @@
 import tensorflow as tf
-from model import pix2pix
+from model import cycleGAN
 import Utils
 
 BUFFER_SIZE = 400
@@ -21,8 +21,9 @@ test_dataset = tf.data.Dataset.list_files(test_PATH+'*.png')
 test_dataset = test_dataset.map(lambda x: Utils.load_image_train(x, shape))
 test_dataset = test_dataset.batch(BATCH_SIZE)
 
-# 加载模型
-pix2pix = pix2pix.pix2pix()
-pix2pix.load_model()
+# 初始化模型
+GAN = cycleGAN.cycleGAN()
+# 加载训练那好的模型
+# GAN.load_model()
 # 训练模型
-pix2pix.fit(train_dataset, 20, test_dataset)
+GAN.fit(train_dataset, EPOCHS, test_dataset)
