@@ -1,5 +1,5 @@
 import tensorflow as tf
-from model import cycleGAN
+from model import cGAN
 import Utils
 
 BUFFER_SIZE = 400
@@ -22,7 +22,7 @@ test_dataset = test_dataset.map(lambda x: Utils.load_image_train(x, shape))
 test_dataset = test_dataset.batch(BATCH_SIZE)
 
 # 初始化模型
-GAN = cycleGAN.cycleGAN()
+GAN = cGAN.cGAN()
 # 加载训练那好的模型
 # GAN.load_model()
 # 训练模型
