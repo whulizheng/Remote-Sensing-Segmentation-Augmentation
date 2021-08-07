@@ -3,6 +3,7 @@ from IPython import display
 import datetime
 import tensorflow as tf
 import os
+import pandas
 import time
 from tensorflow.keras import layers
 OUTPUT_CHANNELS = 3
@@ -23,10 +24,7 @@ class cGAN():
                                               discriminator_optimizer=self.discriminator_optimizer,
                                               generator=self.generator,
                                               discriminator=self.discriminator)
-        self.log_dir = "logs/"
-
-        self.summary_writer = tf.summary.create_file_writer(
-            self.log_dir + "fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+        self.log_dir = "logs/loss/cGAN.csv"
 
     def downsample(self, filters, size, apply_batchnorm=True):
         initializer = tf.random_normal_initializer(0., 0.02)
@@ -139,7 +137,7 @@ class cGAN():
         plt.figure(figsize=(15, 15))
         if tar!=None:
             display_list = [test_input[0], tar[0], prediction[0]]
-            title = ['Input Image', 'Ground Truth', 'Predicted Image']
+            title = ['Input Image', 'Ground Truth', 'Generated Image']
 
             for i in range(3):
                 plt.subplot(1, 3, i+1)
@@ -152,7 +150,7 @@ class cGAN():
             plt.close('all')
         else:
             display_list = [test_input[0], prediction[0]]
-            title = ['Input Image', 'Predicted Image']
+            title = ['Input Image', 'Generated Image']
 
             for i in range(2):
                 plt.subplot(1, 2, i+1)
@@ -163,7 +161,9 @@ class cGAN():
             plt.savefig(tag+".png")
             plt.clf()
             plt.close('all')
-
+    def save_loss_log(self,gen,dis,path):
+        df = pandas.DataFrame([gen,dis],index=["gen","disc"])
+        df.to_csv(path,header=False)
     @tf.function
     def train_step(self, input_image, target, epoch):
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
@@ -187,12 +187,11 @@ class cGAN():
                                                      self.generator.trainable_variables))
         self.discriminator_optimizer.apply_gradients(zip(discriminator_gradients,
                                                          self.discriminator.trainable_variables))
-
-        with self.summary_writer.as_default():
-            tf.summary.scalar('gen_loss', gen_loss, step=epoch)
-            tf.summary.scalar('disc_loss', disc_loss, step=epoch)
+        return gen_loss,disc_loss
 
     def fit(self, train_ds, epochs, test_ds):
+        gen_losses = []
+        disc_losses = []
         for epoch in range(epochs):
             start = time.time()
 
@@ -208,7 +207,9 @@ class cGAN():
                 print('.', end='')
                 if (n+1) % 100 == 0:
                     print()
-                self.train_step(input_image, target, epoch)
+                gen_loss,disc_loss = self.train_step(input_image, target, epoch)
+                gen_losses.append(float(gen_loss))
+                disc_losses.append(float(disc_loss))
             print()
 
             # saving (checkpoint) the model every 20 epochs
@@ -218,6 +219,7 @@ class cGAN():
             print('Time taken for epoch {} is {} sec\n'.format(epoch + 1,
                                                                time.time()-start))
         self.checkpoint.save(file_prefix=self.checkpoint_prefix)
+        self.save_loss_log(gen_losses,disc_losses,self.log_dir)
 
     def load_model(self):
         self.checkpoint.restore(

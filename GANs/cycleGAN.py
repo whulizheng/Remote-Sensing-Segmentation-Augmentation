@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 from IPython.display import clear_output
 import datetime
 import tensorflow as tf
+import pandas
 import os
 import time
 OUTPUT_CHANNELS = 3
@@ -32,6 +33,8 @@ class cycleGAN():
                                              generator_f_optimizer=self.generator_f_optimizer,
                                              discriminator_x_optimizer=self.discriminator_x_optimizer,
                                              discriminator_y_optimizer=self.discriminator_y_optimizer)
+        self.log_dir = "logs/loss/cycleGAN.csv"
+
 
     def downsample(self, filters, size, apply_batchnorm=True):
         initializer = tf.random_normal_initializer(0., 0.02)
@@ -163,7 +166,9 @@ class cycleGAN():
     def identity_loss(self, real_image, same_image):
         loss = tf.reduce_mean(tf.abs(real_image - same_image))
         return self.LAMBDA * 0.5 * loss
-
+    def save_loss_log(self,gen,dis,path):
+        df = pandas.DataFrame([gen,dis],index=["gen","disc"])
+        df.to_csv(path,header=False)
     def generate_images(self, test_input, tag="tmp", if_g_g=1):
         prediction = None
         if if_g_g:
@@ -174,7 +179,7 @@ class cycleGAN():
         plt.figure(figsize=(12, 12))
 
         display_list = [test_input[0], prediction[0]]
-        title = ['Input Image', 'Predicted Image']
+        title = ['Input Image', 'Generated Image']
 
         for i in range(2):
             plt.subplot(1, 2, i+1)
@@ -249,8 +254,11 @@ class cycleGAN():
 
         self.discriminator_y_optimizer.apply_gradients(zip(discriminator_y_gradients,
                                                            self.discriminator_y.trainable_variables))
+        return gen_g_loss, disc_x_loss
 
     def fit(self, train_ds, epochs, test_ds):
+        gen_losses = []
+        disc_losses = []
         for epoch in range(epochs):
             clear_output(wait=True)
             for example_input, example_target in test_ds.take(1):
@@ -260,7 +268,9 @@ class cycleGAN():
             start = time.time()
 
             for n, (input_image, target) in train_ds.enumerate():
-                self.train_step(input_image, target)
+                gen_g_loss, disc_x_loss = self.train_step(input_image, target)
+                gen_losses.append(float(gen_g_loss))
+                disc_losses.append(float(disc_x_loss))
                 if n % 10 == 0:
                     print('.', end='')
             # saving (checkpoint) the model every 20 epochs
@@ -270,6 +280,7 @@ class cycleGAN():
             print('Time taken for epoch {} is {} sec\n'.format(epoch + 1,
                                                                time.time()-start))
         self.checkpoints.save(file_prefix=self.checkpoint_prefix)
+        self.save_loss_log(gen_losses,disc_losses,self.log_dir)
 
     def load_model(self):
         self.checkpoints.restore(

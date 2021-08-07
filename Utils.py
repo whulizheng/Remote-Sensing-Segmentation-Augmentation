@@ -1,7 +1,10 @@
+from matplotlib.pyplot import plot
 import tensorflow as tf
+import pandas
+import matplotlib.pyplot as plt
 
 
-def load(image_file,reverse = 0):
+def load(image_file, reverse=0):
     image = tf.io.read_file(image_file)
     image = tf.image.decode_jpeg(image)
 
@@ -14,10 +17,9 @@ def load(image_file,reverse = 0):
     input_image = tf.cast(input_image, tf.float32)
     real_image = tf.cast(real_image, tf.float32)
     if reverse:
-        return real_image,input_image
+        return real_image, input_image
     else:
-        return input_image,real_image
-
+        return input_image, real_image
 
 
 def resize(input_image, real_image, height, width):
@@ -64,18 +66,31 @@ def random_jitter(input_image, real_image, shape):
     return input_image, real_image
 
 
-def load_image_train(image_file, shape,reverse=0):
-    input_image, real_image = load(image_file,reverse)
+def load_image_train(image_file, shape, reverse=0):
+    input_image, real_image = load(image_file, reverse)
     input_image, real_image = random_jitter(input_image, real_image, shape)
     input_image, real_image = normalize(input_image, real_image)
 
     return input_image, real_image
 
 
-def load_image_test(image_file, shape,reverse=0):
-    input_image, real_image = load(image_file,reverse)
+def load_image_test(image_file, shape, reverse=0):
+    input_image, real_image = load(image_file, reverse)
     input_image, real_image = resize(
         input_image, real_image, shape[0], shape[1])
     input_image, real_image = normalize(input_image, real_image)
 
     return input_image, real_image
+
+
+def visualize_loss(csv_path):
+    df = pandas.read_csv(csv_path, header=None, index_col=0)
+    plt.figure(figsize=(8, 6), dpi=80)
+    for index in df.index.values:
+        plt.plot(df.loc[index,:], label=index)
+    plt.legend(loc='upper left')
+    plt.show()
+
+
+if __name__ == "__main__":
+    visualize_loss("logs/loss/pix2pix.csv")
