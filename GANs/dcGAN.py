@@ -100,6 +100,7 @@ class dcGAN():
                 plt.imshow(display_list[i] * 0.5 + 0.5)
                 plt.axis('off')
             plt.savefig(tag+".png")
+            plt.clf()
             plt.close('all')
         else:
             display_list = [prediction[0]]
@@ -112,6 +113,7 @@ class dcGAN():
                 plt.imshow(display_list[i] * 0.5 + 0.5)
                 plt.axis('off')
             plt.savefig(tag+".png")
+            plt.clf()
             plt.close('all')
 
     @tf.function

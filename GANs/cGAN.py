@@ -148,6 +148,7 @@ class cGAN():
                 plt.imshow(display_list[i] * 0.5 + 0.5)
                 plt.axis('off')
             plt.savefig(tag+".png")
+            plt.clf()
             plt.close('all')
         else:
             display_list = [test_input[0], prediction[0]]
@@ -160,6 +161,7 @@ class cGAN():
                 plt.imshow(display_list[i] * 0.5 + 0.5)
                 plt.axis('off')
             plt.savefig(tag+".png")
+            plt.clf()
             plt.close('all')
 
     @tf.function

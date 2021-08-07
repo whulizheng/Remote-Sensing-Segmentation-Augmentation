@@ -172,10 +172,10 @@ class pix2pix():
             for i in range(3):
                 plt.subplot(1, 3, i+1)
                 plt.title(title[i])
-                # getting the pixel values between [0, 1] to plot it.
                 plt.imshow(display_list[i] * 0.5 + 0.5)
                 plt.axis('off')
             plt.savefig(tag+".png")
+            plt.clf()
             plt.close('all')
         else:
             display_list = [test_input[0], prediction[0]]
@@ -184,10 +184,10 @@ class pix2pix():
             for i in range(2):
                 plt.subplot(1, 2, i+1)
                 plt.title(title[i])
-                # getting the pixel values between [0, 1] to plot it.
                 plt.imshow(display_list[i] * 0.5 + 0.5)
                 plt.axis('off')
             plt.savefig(tag+".png")
+            plt.clf()
             plt.close('all')
 
     @tf.function

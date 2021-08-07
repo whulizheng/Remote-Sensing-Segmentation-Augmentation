@@ -1,5 +1,5 @@
 import tensorflow as tf
-from GANs_models import pix2pix
+from GANs import pix2pix
 import Utils
 
 BUFFER_SIZE = 400

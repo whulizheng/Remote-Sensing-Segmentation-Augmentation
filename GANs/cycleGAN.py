@@ -184,6 +184,7 @@ class cycleGAN():
             plt.axis('off')
         # plt.show()
         plt.savefig(tag+".png")
+        plt.clf()
         plt.close('all')
 
     @tf.function
