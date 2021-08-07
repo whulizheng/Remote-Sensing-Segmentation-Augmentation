@@ -27,5 +27,6 @@ if __name__ == "__main__":
     source_files = scan_file(source_path)
     for s in tqdm(source_files):
         img = Image.open(source_path+s)
+        img = img.resize((128,128))
         name = s[0:-4]
         img.save(target_path+name+".png")

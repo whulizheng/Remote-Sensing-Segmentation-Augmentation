@@ -1,5 +1,5 @@
 import tensorflow as tf
-from model import cGAN
+from GANs_models import cGAN
 import Utils
 
 BUFFER_SIZE = 400
