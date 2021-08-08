@@ -268,17 +268,19 @@ class cycleGAN():
             '''
             print("Epoch: ", epoch)
             start = time.time()
-
+            gen_g_loss = 0
+            disc_x_loss = 0
             for n, (input_image, target) in train_ds.enumerate():
                 gen_g_loss, disc_x_loss = self.train_step(input_image, target)
-                gen_losses.append(float(gen_g_loss))
-                disc_losses.append(float(disc_x_loss))
                 if n % 10 == 0:
                     print('.', end='')
+            gen_losses.append(float(gen_g_loss))
+            disc_losses.append(float(disc_x_loss))
             # saving (checkpoint) the model every 20 epochs
+            '''
             if (epoch + 1) % 20 == 0:
                 self.checkpoints.save(file_prefix=self.checkpoint_prefix)
-
+            '''
             print('Time taken for epoch {} is {} sec\n'.format(epoch + 1,
                                                                time.time()-start))
         self.checkpoints.save(file_prefix=self.checkpoint_prefix)

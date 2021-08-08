@@ -204,19 +204,23 @@ class cGAN():
             print("Epoch: ", epoch)
 
             # Train
+            gen_loss = 0
+            disc_loss = 0
             for n, (input_image, target) in train_ds.enumerate():
                 print('.', end='')
                 if (n+1) % 100 == 0:
                     print()
+                
                 gen_loss,disc_loss = self.train_step(input_image, target, epoch)
-                gen_losses.append(float(gen_loss))
-                disc_losses.append(float(disc_loss))
+            gen_losses.append(float(gen_loss))
+            disc_losses.append(float(disc_loss))
             print()
 
             # saving (checkpoint) the model every 20 epochs
+            '''
             if (epoch + 1) % 20 == 0:
                 self.checkpoint.save(file_prefix=self.checkpoint_prefix)
-
+            '''
             print('Time taken for epoch {} is {} sec\n'.format(epoch + 1,
                                                                time.time()-start))
         self.checkpoint.save(file_prefix=self.checkpoint_prefix)
