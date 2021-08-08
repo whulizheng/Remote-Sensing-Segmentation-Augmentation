@@ -196,10 +196,11 @@ class cGAN():
             start = time.time()
 
             display.clear_output(wait=True)
-
+            '''
             for example_input, example_target in test_ds.take(1):
                 self.generate_images(
                     example_input, example_target, "tmp/"+str(epoch)+"_tmp")
+            '''
             print("Epoch: ", epoch)
 
             # Train

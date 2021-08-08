@@ -151,7 +151,7 @@ class dcGAN():
         for epoch in range(epochs):
             start = time.time()
             display.clear_output(wait=True)
-            self.generate_images(tag = "tmp/"+str(epoch)+"_tmp")
+            # self.generate_images(tag = "tmp/"+str(epoch)+"_tmp")
             print("Epoch: ", epoch)
 
             # Train

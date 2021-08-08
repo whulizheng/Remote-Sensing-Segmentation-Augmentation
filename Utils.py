@@ -1,4 +1,4 @@
-from matplotlib.pyplot import plot
+from matplotlib.pyplot import plot, title
 import tensorflow as tf
 import pandas
 import matplotlib.pyplot as plt
@@ -86,8 +86,11 @@ def load_image_test(image_file, shape, reverse=0):
 def visualize_loss(csv_path):
     df = pandas.read_csv(csv_path, header=None, index_col=0)
     plt.figure(figsize=(8, 6), dpi=80)
+    plt.xlabel("epoch")
+    plt.ylabel("loss value")
+    plt.title(csv_path)
     for index in df.index.values:
-        plt.plot(df.loc[index,:], label=index)
+        plt.plot(df.loc[index, :], label=index)
     plt.legend(loc='upper left')
     plt.show()
 
