@@ -92,8 +92,9 @@ def visualize_loss(csv_path):
     for index in df.index.values:
         plt.plot(df.loc[index, :], label=index)
     plt.legend(loc='upper left')
-    plt.show()
+    # plt.show()
+    plt.savefig(csv_path[0:-3]+".png")
 
 
 if __name__ == "__main__":
-    visualize_loss("logs/loss/cycleGAN.csv")
+    visualize_loss("logs/loss/pix2pix.csv")
